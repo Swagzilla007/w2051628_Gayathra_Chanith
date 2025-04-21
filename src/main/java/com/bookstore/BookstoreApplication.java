@@ -2,10 +2,12 @@ package com.bookstore;
 
 import com.bookstore.mapper.*;
 import com.bookstore.resource.*;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
+@ApplicationPath("/api")
 public class BookstoreApplication extends Application {
     @Override
     public Set<Class<?>> getClasses() {

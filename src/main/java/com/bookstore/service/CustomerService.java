@@ -11,8 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class CustomerService {
-    private final Map<Long, Customer> customers = new ConcurrentHashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong(1);
+    private static final Map<Long, Customer> customers = new ConcurrentHashMap<>();
+    private static final AtomicLong idGenerator = new AtomicLong(1);
 
     public Customer createCustomer(Customer customer) {
         if (customer == null) {

@@ -11,8 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class AuthorService {
-    private final Map<Long, Author> authors = new ConcurrentHashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong(1);
+    private static final Map<Long, Author> authors = new ConcurrentHashMap<>();
+    private static final AtomicLong idGenerator = new AtomicLong(1);
 
     public Author createAuthor(Author author) {
         if (author == null) {

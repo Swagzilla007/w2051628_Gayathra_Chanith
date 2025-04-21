@@ -13,10 +13,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class OrderService {
-    private final Map<Long, Order> orders = new ConcurrentHashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong(1);
-    private final CartService cartService;
-    private final BookService bookService;
+    private static final Map<Long, Order> orders = new ConcurrentHashMap<>();
+    private static final AtomicLong idGenerator = new AtomicLong(1);
+    private final CartService cartService; // Remove static
+    private final BookService bookService; // Remove static
 
     public OrderService(CartService cartService, BookService bookService) {
         this.cartService = cartService;

@@ -14,8 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class CartService {
-    private final Map<Long, Cart> carts = new ConcurrentHashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong(1);
+    private static final Map<Long, Cart> carts = new ConcurrentHashMap<>();
+    private static final AtomicLong idGenerator = new AtomicLong(1);
     private final BookService bookService;
 
     public CartService(BookService bookService) {

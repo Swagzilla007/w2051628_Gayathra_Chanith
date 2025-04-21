@@ -6,14 +6,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class CartItem {
     private Book book;
     private int quantity;
+    private double totalPrice;
 
     public CartItem() {
-        // Default constructor required for JAX-RS
+        this.quantity = 0;
+        this.totalPrice = 0.0;
     }
 
     public CartItem(Book book, int quantity) {
         this.book = book;
         this.quantity = quantity;
+        this.totalPrice = calculateTotalPrice();
     }
 
     // Getters and Setters
@@ -31,10 +34,17 @@ public class CartItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+        this.totalPrice = calculateTotalPrice();
     }
 
-    // Helper method to calculate total price for this item
     public double getTotalPrice() {
-        return book.getPrice() * quantity;
+        return calculateTotalPrice();
+    }
+
+    private double calculateTotalPrice() {
+        if (book != null) {
+            return book.getPrice() * quantity;
+        }
+        return 0.0;
     }
 }

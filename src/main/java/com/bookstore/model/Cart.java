@@ -9,15 +9,18 @@ public class Cart {
     private Long id;
     private Customer customer;
     private List<CartItem> items;
+    private double totalPrice;
 
     public Cart() {
-        items = new ArrayList<>();
+        this.items = new ArrayList<>();
+        this.totalPrice = 0.0;
     }
 
     public Cart(Long id, Customer customer) {
         this.id = id;
         this.customer = customer;
         this.items = new ArrayList<>();
+        this.totalPrice = 0.0;
     }
 
     // Getters and Setters
@@ -45,22 +48,34 @@ public class Cart {
         this.items = items;
     }
 
+    public double getTotalPrice() {
+        this.totalPrice = calculateTotalPrice();
+        return this.totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
     // Helper methods
     public void addItem(CartItem item) {
         items.add(item);
+        this.totalPrice = calculateTotalPrice();
     }
 
     public void removeItem(CartItem item) {
         items.remove(item);
-    }
-
-    public double getTotalPrice() {
-        return items.stream()
-                .mapToDouble(CartItem::getTotalPrice)
-                .sum();
+        this.totalPrice = calculateTotalPrice();
     }
 
     public void clearCart() {
         items.clear();
+        this.totalPrice = 0.0;
+    }
+
+    private double calculateTotalPrice() {
+        return items.stream()
+                .mapToDouble(CartItem::getTotalPrice)
+                .sum();
     }
 }

@@ -1,7 +1,6 @@
 package com.bookstore.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,20 +9,20 @@ public class Order {
     private Long id;
     private Customer customer;
     private List<CartItem> items;
-    private LocalDateTime orderDate;
+    private String orderDate; // Changed to String
     private double totalAmount;
     private String status;
 
     public Order() {
         items = new ArrayList<>();
-        orderDate = LocalDateTime.now();
+        this.orderDate = "2024-04-22"; // Hardcoded date
     }
 
     public Order(Long id, Customer customer, List<CartItem> items) {
         this.id = id;
         this.customer = customer;
         this.items = items;
-        this.orderDate = LocalDateTime.now();
+        this.orderDate = "2024-04-22"; // Hardcoded date
         this.totalAmount = calculateTotalAmount();
         this.status = "PENDING";
     }
@@ -54,11 +53,11 @@ public class Order {
         this.totalAmount = calculateTotalAmount();
     }
 
-    public LocalDateTime getOrderDate() {
+    public String getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(LocalDateTime orderDate) {
+    public void setOrderDate(String orderDate) {
         this.orderDate = orderDate;
     }
 

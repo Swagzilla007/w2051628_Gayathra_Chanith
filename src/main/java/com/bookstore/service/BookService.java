@@ -11,8 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class BookService {
-    private final Map<Long, Book> books = new ConcurrentHashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong(1);
+    private static final Map<Long, Book> books = new ConcurrentHashMap<>(); // Make it static
+    private static final AtomicLong idGenerator = new AtomicLong(1);
 
     public Book createBook(Book book) {
         if (book == null) {

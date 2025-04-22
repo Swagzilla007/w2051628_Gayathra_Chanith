@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-@Path("/orders")
+@Path("/customers/{customerId}/orders")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class OrderResource {
@@ -23,47 +23,28 @@ public class OrderResource {
     }
 
     @POST
-    @Path("/cart/{cartId}")
-    public Response createOrderFromCart(@PathParam("cartId") Long cartId) {
-        Order order = orderService.createOrderFromCart(cartId);
+    public Response createOrder(@PathParam("customerId") Long customerId) {
+        Order order = orderService.createOrderFromCart(customerId);
         return Response.status(Response.Status.CREATED)
                 .entity(order)
                 .build();
     }
 
     @GET
-    @Path("/{id}")
-    public Response getOrder(@PathParam("id") Long id) {
-        Order order = orderService.getOrder(id);
-        return Response.ok(order).build();
-    }
-
-    @GET
-    public Response getAllOrders() {
-        List<Order> orders = orderService.getAllOrders();
-        return Response.ok(orders).build();
-    }
-
-    @GET
-    @Path("/customer/{customerId}")
     public Response getCustomerOrders(@PathParam("customerId") Long customerId) {
         List<Order> orders = orderService.getOrdersByCustomerId(customerId);
         return Response.ok(orders).build();
     }
 
-    @PUT
-    @Path("/{orderId}/status")
-    public Response updateOrderStatus(
-            @PathParam("orderId") Long orderId,
-            @QueryParam("status") String status) {
-        Order updatedOrder = orderService.updateOrderStatus(orderId, status);
-        return Response.ok(updatedOrder).build();
-    }
-
-    @POST
-    @Path("/{orderId}/cancel")
-    public Response cancelOrder(@PathParam("orderId") Long orderId) {
-        orderService.cancelOrder(orderId);
-        return Response.ok().build();
+    @GET
+    @Path("/{orderId}")
+    public Response getOrder(
+            @PathParam("customerId") Long customerId,
+            @PathParam("orderId") Long orderId) {
+        Order order = orderService.getOrder(orderId);
+        if (!order.getCustomer().getId().equals(customerId)) {
+            throw new NotAuthorizedException("Order does not belong to customer");
+        }
+        return Response.ok(order).build();
     }
 }

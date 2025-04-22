@@ -15,16 +15,16 @@ import java.util.concurrent.atomic.AtomicLong;
 public class OrderService {
     private static final Map<Long, Order> orders = new ConcurrentHashMap<>();
     private static final AtomicLong idGenerator = new AtomicLong(1);
-    private final CartService cartService; // Remove static
-    private final BookService bookService; // Remove static
+    private final CartService cartService;
+    private final BookService bookService;
 
     public OrderService(CartService cartService, BookService bookService) {
         this.cartService = cartService;
         this.bookService = bookService;
     }
 
-    public Order createOrderFromCart(Long cartId) {
-        Cart cart = cartService.getCart(cartId);
+    public Order createOrderFromCart(Long customerId) {
+        Cart cart = cartService.getCartByCustomerId(customerId);
 
         if (cart.getItems().isEmpty()) {
             throw new InvalidInputException("Cannot create order from empty cart");
@@ -47,7 +47,7 @@ public class OrderService {
         orders.put(order.getId(), order);
 
         // Clear the cart after successful order creation
-        cartService.clearCart(cartId);
+        cartService.clearCart(customerId);
 
         return order;
     }

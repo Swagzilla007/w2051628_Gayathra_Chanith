@@ -1,6 +1,7 @@
 package com.bookstore.resource;
 
 import com.bookstore.model.Author;
+import com.bookstore.model.Book; // Add this import
 import com.bookstore.service.AuthorService;
 
 import javax.ws.rs.*;
@@ -58,5 +59,12 @@ public class AuthorResource {
     public Response searchAuthors(@QueryParam("name") String name) {
         List<Author> authors = authorService.searchAuthorsByName(name);
         return Response.ok(authors).build();
+    }
+
+    @GET
+    @Path("/{id}/books")
+    public Response getAuthorBooks(@PathParam("id") Long id) {
+        List<Book> books = authorService.getAuthorBooks(id);
+        return Response.ok(books).build();
     }
 }

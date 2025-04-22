@@ -3,16 +3,23 @@ package com.bookstore.service;
 import com.bookstore.exception.AuthorNotFoundException;
 import com.bookstore.exception.InvalidInputException;
 import com.bookstore.model.Author;
+import com.bookstore.model.Book;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 public class AuthorService {
     private static final Map<Long, Author> authors = new ConcurrentHashMap<>();
     private static final AtomicLong idGenerator = new AtomicLong(1);
+    private final BookService bookService;
+
+    public AuthorService() {
+        this.bookService = new BookService();
+    }
 
     public Author createAuthor(Author author) {
         if (author == null) {
@@ -73,5 +80,16 @@ public class AuthorService {
         return authors.values().stream()
                 .filter(author -> author.getName().toLowerCase().contains(name.toLowerCase()))
                 .toList();
+    }
+
+    public List<Book> getAuthorBooks(Long authorId) {
+        if (!authors.containsKey(authorId)) {
+            throw new AuthorNotFoundException(authorId);
+        }
+
+        return bookService.getAllBooks().stream()
+                .filter(book -> book.getAuthor() != null &&
+                        book.getAuthor().getId().equals(authorId))
+                .collect(Collectors.toList());
     }
 }

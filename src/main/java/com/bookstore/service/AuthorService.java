@@ -17,8 +17,8 @@ public class AuthorService {
     private static final AtomicLong idGenerator = new AtomicLong(1);
     private final BookService bookService;
 
-    public AuthorService() {
-        this.bookService = new BookService();
+    public AuthorService(BookService bookService) {
+        this.bookService = bookService;
     }
 
     public Author createAuthor(Author author) {

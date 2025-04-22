@@ -3,6 +3,7 @@ package com.bookstore.service;
 import com.bookstore.exception.BookNotFoundException;
 import com.bookstore.exception.InvalidInputException;
 import com.bookstore.model.Book;
+import com.bookstore.model.Author;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +12,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class BookService {
-    private static final Map<Long, Book> books = new ConcurrentHashMap<>(); // Make it static
+    private static final Map<Long, Book> books = new ConcurrentHashMap<>();
     private static final AtomicLong idGenerator = new AtomicLong(1);
+    private AuthorService authorService;
+
+    public BookService() {
+        // Remove AuthorService initialization from constructor
+    }
+
+    // Add setter for AuthorService
+    public void setAuthorService(AuthorService authorService) {
+        this.authorService = authorService;
+    }
 
     public Book createBook(Book book) {
         if (book == null) {
@@ -21,8 +32,14 @@ public class BookService {
         if (book.getTitle() == null || book.getTitle().trim().isEmpty()) {
             throw new InvalidInputException("Book title cannot be empty");
         }
-        if (book.getAuthor() == null) {
-            throw new InvalidInputException("Book author cannot be null");
+        if (book.getAuthor() == null || book.getAuthor().getId() == null) {
+            throw new InvalidInputException("Author ID is required");
+        }
+
+        // Check if authorService is initialized
+        if (authorService != null) {
+            Author author = authorService.getAuthor(book.getAuthor().getId());
+            book.setAuthor(author);
         }
 
         book.setId(idGenerator.getAndIncrement());

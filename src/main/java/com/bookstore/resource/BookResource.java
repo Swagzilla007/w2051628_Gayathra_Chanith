@@ -2,6 +2,7 @@ package com.bookstore.resource;
 
 import com.bookstore.model.Book;
 import com.bookstore.service.BookService;
+import com.bookstore.service.AuthorService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -13,9 +14,12 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class BookResource {
     private final BookService bookService;
+    private final AuthorService authorService;
 
     public BookResource() {
         this.bookService = new BookService();
+        this.authorService = new AuthorService(this.bookService);
+        this.bookService.setAuthorService(this.authorService);
     }
 
     @POST

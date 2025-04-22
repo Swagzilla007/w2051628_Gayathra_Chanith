@@ -14,9 +14,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CartService {
     private static final Map<Long, Cart> customerCarts = new ConcurrentHashMap<>();
     private final BookService bookService;
+    private final CustomerService customerService; // Add CustomerService
 
     public CartService(BookService bookService) {
         this.bookService = bookService;
+        this.customerService = new CustomerService(); // Initialize CustomerService
     }
 
     public Cart getCartByCustomerId(Long customerId) {
@@ -27,8 +29,12 @@ public class CartService {
         return customerCarts.computeIfAbsent(customerId, k -> {
             Cart cart = new Cart();
             cart.setId(customerId);
-            cart.setItems(new ArrayList<>()); // Initialize items list
-            cart.setCustomer(new Customer(customerId, null, null, null));
+            cart.setItems(new ArrayList<>());
+
+            // Fetch complete customer details
+            Customer customer = customerService.getCustomer(customerId);
+            cart.setCustomer(customer);
+
             return cart;
         });
     }

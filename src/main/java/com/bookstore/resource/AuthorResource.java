@@ -3,6 +3,7 @@ package com.bookstore.resource;
 import com.bookstore.model.Author;
 import com.bookstore.model.Book; // Add this import
 import com.bookstore.service.AuthorService;
+import com.bookstore.service.BookService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -16,7 +17,8 @@ public class AuthorResource {
     private final AuthorService authorService;
 
     public AuthorResource() {
-        this.authorService = new AuthorService();
+        BookService bookService = new BookService();
+        this.authorService = new AuthorService(bookService);
     }
 
     @POST

@@ -8,7 +8,9 @@ import com.bookstore.service.CustomerService;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/customers/{customerId}/cart")
 @Produces(MediaType.APPLICATION_JSON)
@@ -64,5 +66,20 @@ public class CartResource {
         customerService.getCustomer(customerId);
         Cart cart = cartService.removeItemFromCart(customerId, bookId);
         return Response.ok(cart).build();
+    }
+
+    // Add this method to handle invalid cart paths
+    @GET
+    @Path("/{cartPath: .*}")
+    public Response handleInvalidCartPath(@PathParam("customerId") Long customerId) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("message", "Invalid cart path");
+        error.put("status", Response.Status.NOT_FOUND.getStatusCode());
+        error.put("error", "Cart Not Found");
+
+        return Response.status(Response.Status.NOT_FOUND)
+                .entity(error)
+                .type(MediaType.APPLICATION_JSON)
+                .build();
     }
 }

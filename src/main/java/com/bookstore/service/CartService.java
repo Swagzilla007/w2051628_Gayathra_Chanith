@@ -6,6 +6,8 @@ import com.bookstore.model.Cart;
 import com.bookstore.model.CartItem;
 import com.bookstore.model.Book;
 import com.bookstore.model.Customer;
+import com.bookstore.exception.CartNotFoundException;
+import com.bookstore.exception.CustomerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -14,11 +16,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CartService {
     private static final Map<Long, Cart> customerCarts = new ConcurrentHashMap<>();
     private final BookService bookService;
-    private final CustomerService customerService; // Add CustomerService
+    private final CustomerService customerService;
 
     public CartService(BookService bookService) {
         this.bookService = bookService;
-        this.customerService = new CustomerService(); // Initialize CustomerService
+        this.customerService = new CustomerService();
     }
 
     public Cart getCartByCustomerId(Long customerId) {
@@ -26,17 +28,21 @@ public class CartService {
             throw new InvalidInputException("Customer ID cannot be null");
         }
 
-        return customerCarts.computeIfAbsent(customerId, k -> {
-            Cart cart = new Cart();
-            cart.setId(customerId);
-            cart.setItems(new ArrayList<>());
-
-            // Fetch complete customer details
+        try {
+            // Check if customer exists
             Customer customer = customerService.getCustomer(customerId);
-            cart.setCustomer(customer);
 
-            return cart;
-        });
+            // Get or create cart
+            return customerCarts.computeIfAbsent(customerId, k -> {
+                Cart cart = new Cart();
+                cart.setId(customerId);
+                cart.setItems(new ArrayList<>());
+                cart.setCustomer(customer);
+                return cart;
+            });
+        } catch (CustomerNotFoundException e) {
+            throw new CartNotFoundException("Cart not found for customer id: " + customerId);
+        }
     }
 
     public Cart addItemToCart(Long customerId, Long bookId, int quantity) {

@@ -73,7 +73,7 @@ public class CartService {
             cart.addItem(newItem);
         }
 
-        // Make sure to update the cart in the map
+        
         customerCarts.put(customerId, cart);
         return cart;
     }
